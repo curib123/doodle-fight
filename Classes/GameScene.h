@@ -68,6 +68,7 @@ private:
     cocos2d::Label* koLabel_{nullptr};
     cocos2d::Label* networkStatusLabel_{nullptr};
     cocos2d::Label* roomsLabel_{nullptr};
+    cocos2d::Label* targetTagLabel_{nullptr};
 
     bool moveLeft_{false};
     bool moveRight_{false};
