@@ -1,3 +1,6 @@
+# Local engine checkout
+cocos2d/
+
 # Build outputs
 build/
 cmake-build-*/
