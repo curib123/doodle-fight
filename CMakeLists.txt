@@ -28,6 +28,7 @@ set(GAME_HEADERS
     Classes/Combat/Projectile.h
     Classes/Combat/Weapon.h
     Classes/Network/NetworkManager.h
+    Classes/Network/Protocol.h
 )
 
 add_library(doodle_fight_game STATIC ${GAME_SOURCES} ${GAME_HEADERS})
@@ -35,6 +36,8 @@ target_include_directories(doodle_fight_game PUBLIC Classes)
 target_link_libraries(doodle_fight_game PUBLIC cocos2d)
 
 if(WIN32)
+    target_link_libraries(doodle_fight_game PUBLIC ws2_32)
+
     add_executable(doodle_fight WIN32 proj.win32/main.cpp)
     target_include_directories(doodle_fight PRIVATE Classes)
     target_link_libraries(doodle_fight PRIVATE doodle_fight_game)
