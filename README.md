@@ -25,6 +25,7 @@ The prototype now includes:
 - A shootable Training Buddy for combat testing
 - Brighter sky/island prototype presentation and combat HUD
 - Initial networking scaffold for the upcoming LAN P2P milestone
+- Windows desktop entry point and PowerShell setup/build helpers
 
 No external character or weapon art is required for the current prototype.
 
@@ -36,6 +37,20 @@ No external character or weapon art is required for the current prototype.
 - `Mouse` — aim in 360 degrees
 - `Left Mouse` — fire / hold to fire
 - `R` — reload
+
+## Run on Windows
+
+Prerequisites: Git, CMake, and Visual Studio 2022 with the Desktop development with C++ workload.
+
+```powershell
+git clone https://github.com/curib123/doodle-fight.git
+cd doodle-fight
+.\scripts\setup_cocos.ps1
+.\scripts\build_windows.ps1
+.\build\Release\doodle_fight.exe
+```
+
+`setup_cocos.ps1` installs Cocos2d-x v4 into the ignored local `cocos2d/` directory, so the engine source is not copied into this repository.
 
 ## MVP roadmap
 
