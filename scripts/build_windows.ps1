@@ -18,8 +18,7 @@ function Invoke-NativeCommand {
         [Parameter(Mandatory = $true)]
         [string]$FilePath,
 
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$Arguments
+        [string[]]$Arguments = @()
     )
 
     & $FilePath @Arguments
@@ -57,19 +56,23 @@ Write-Host "Configuring Doodle Fight ($Configuration, Visual Studio 2022 x64)...
 
 # CMake 4.x is stricter with older third-party CMake projects used by Cocos2d-x v4.
 # Supplying the policy floor keeps those dependencies compatible without modifying them.
-Invoke-NativeCommand cmake `
-    -S $RepoRoot `
-    -B $BuildPath `
-    -G "Visual Studio 17 2022" `
-    -A x64 `
-    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+$ConfigureArgs = @(
+    "-S", $RepoRoot,
+    "-B", $BuildPath,
+    "-G", "Visual Studio 17 2022",
+    "-A", "x64",
+    "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+)
+Invoke-NativeCommand -FilePath "cmake" -Arguments $ConfigureArgs
 
 Write-Host "Building doodle_fight target..."
-Invoke-NativeCommand cmake `
-    --build $BuildPath `
-    --config $Configuration `
-    --target doodle_fight `
-    --parallel
+$BuildArgs = @(
+    "--build", $BuildPath,
+    "--config", $Configuration,
+    "--target", "doodle_fight",
+    "--parallel"
+)
+Invoke-NativeCommand -FilePath "cmake" -Arguments $BuildArgs
 
 $Exe = Get-ChildItem -Path $BuildPath -Filter "doodle_fight.exe" -Recurse -ErrorAction SilentlyContinue |
     Where-Object { $_.FullName -match "\\$Configuration\\" } |
