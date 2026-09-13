@@ -5,33 +5,52 @@ Doodle Fight is an original, cute and colorful 2D jetpack arena shooter built fr
 ## Direction
 
 - Android first, Windows for development/testing
-- Cocos2d-x + C++17
+- Cocos2d-x v4-style APIs + C++17
 - Host-authoritative P2P multiplayer
 - LAN discovery first; Internet P2P/NAT traversal later
 - Cute fantasy-tech characters, rounded shapes, bright VFX and colorful floating-island arenas
 - No required accounts, backend, or dedicated match server for LAN play
 
-## Current milestone
+## Current playable foundation
 
-The repository now contains the first playable foundation: an original vector-drawn placeholder hero, left/right movement, gravity, jetpack thrust and a simple ground arena. No external art assets are needed for this prototype.
+The prototype now includes:
 
-## Controls (prototype)
+- Original vector-drawn sky-explorer mascot
+- Left/right movement, gravity and jetpack thrust
+- 360-degree mouse aiming with an on-screen reticle
+- Reusable `Weapon` definition/state system
+- Pulse Pistol with fire rate, magazine, reload timing, damage and projectile speed
+- Reusable projectile entity with lifetime and hit radius
+- Damage, health, KO counting and automatic respawn lifecycle
+- A shootable Training Buddy for combat testing
+- Brighter sky/island prototype presentation and combat HUD
+- Initial networking scaffold for the upcoming LAN P2P milestone
+
+No external character or weapon art is required for the current prototype.
+
+## Controls (Windows prototype)
 
 - `A` / `Left Arrow` — move left
 - `D` / `Right Arrow` — move right
 - `Space` — jetpack
+- `Mouse` — aim in 360 degrees
+- `Left Mouse` — fire / hold to fire
+- `R` — reload
 
-## Planned MVP
+## MVP roadmap
 
-1. Movement + jetpack
-2. 360-degree aiming
-3. Shooting and four original fantasy-tech weapons
-4. Health, KO and respawn
-5. One colorful arena
-6. LAN host/join discovery
-7. Host-authoritative UDP networking
-8. 2–4 player Free For All
-9. Prediction/interpolation/reconciliation
-10. Android + Windows builds
+- [x] Movement + jetpack
+- [x] 360-degree aiming
+- [x] Shooting/projectiles
+- [x] Reusable weapon foundation
+- [x] Health, KO and respawn
+- [ ] Four distinct original fantasy-tech weapons
+- [ ] One production-quality colorful arena
+- [ ] LAN room discovery
+- [ ] Host-authoritative UDP gameplay
+- [ ] 2–4 player Free For All
+- [ ] Prediction/interpolation/reconciliation
+- [ ] Android touch controls
+- [ ] Android + Windows distributable builds
 
 See `docs/GAME_DESIGN.md` and `docs/NETWORKING.md` for the locked direction.
