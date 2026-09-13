@@ -141,3 +141,27 @@ bool Player::takeDamage(float amount) {
     setVisible(false);
     return true;
 }
+
+void Player::applyNetworkState(const Vec2& position,
+                               const Vec2& velocity,
+                               const Vec2& aimDirection,
+                               float health,
+                               bool alive,
+                               float motionBlend) {
+    const float blend = std::clamp(motionBlend, 0.0f, 1.0f);
+    const Vec2 currentPosition = getPosition();
+    setPosition(currentPosition + (position - currentPosition) * blend);
+    velocity_ = velocity_ + (velocity - velocity_) * blend;
+
+    setAimDirection(aimDirection);
+    health_ = std::clamp(health, 0.0f, maxHealth_);
+    alive_ = alive;
+
+    if (alive_) {
+        respawnTimer_ = 0.0f;
+        setVisible(true);
+    } else {
+        velocity_ = Vec2::ZERO;
+        setVisible(false);
+    }
+}
