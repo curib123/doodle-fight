@@ -1,5 +1,8 @@
 #include "Combat/Projectile.h"
 
+#include <cmath>
+#include <new>
+
 USING_NS_CC;
 
 Projectile* Projectile::create(const Vec2& direction,
