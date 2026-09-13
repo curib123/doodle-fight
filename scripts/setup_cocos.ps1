@@ -9,8 +9,7 @@ function Invoke-NativeCommand {
         [Parameter(Mandatory = $true)]
         [string]$FilePath,
 
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$Arguments
+        [string[]]$Arguments = @()
     )
 
     & $FilePath @Arguments
@@ -25,7 +24,14 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
 
 if (-not (Test-Path $CocosCMake)) {
     Write-Host "Cloning Cocos2d-x v4 into $CocosPath..."
-    Invoke-NativeCommand git clone --depth 1 --branch v4 https://github.com/cocos2d/cocos2d-x.git $CocosPath
+    $CloneArgs = @(
+        "clone",
+        "--depth", "1",
+        "--branch", "v4",
+        "https://github.com/cocos2d/cocos2d-x.git",
+        $CocosPath
+    )
+    Invoke-NativeCommand -FilePath "git" -Arguments $CloneArgs
 }
 else {
     Write-Host "Cocos2d-x source already exists at $CocosPath"
@@ -34,25 +40,17 @@ else {
 Push-Location $CocosPath
 try {
     Write-Host "Initializing Cocos2d-x submodules..."
-    Invoke-NativeCommand git submodule update --init --recursive
+    Invoke-NativeCommand -FilePath "git" -Arguments @("submodule", "update", "--init", "--recursive")
 
     $DownloadDeps = Join-Path $CocosPath "download-deps.py"
     if (Test-Path $DownloadDeps) {
-        $PythonCommand = $null
-        $PythonArgs = @()
-
         if (Get-Command py -ErrorAction SilentlyContinue) {
-            $PythonCommand = "py"
-            $PythonArgs = @("-3", $DownloadDeps)
+            Write-Host "Downloading Cocos2d-x external dependencies..."
+            Invoke-NativeCommand -FilePath "py" -Arguments @("-3", $DownloadDeps)
         }
         elseif (Get-Command python -ErrorAction SilentlyContinue) {
-            $PythonCommand = "python"
-            $PythonArgs = @($DownloadDeps)
-        }
-
-        if ($PythonCommand) {
             Write-Host "Downloading Cocos2d-x external dependencies..."
-            Invoke-NativeCommand $PythonCommand @PythonArgs
+            Invoke-NativeCommand -FilePath "python" -Arguments @($DownloadDeps)
         }
         else {
             Write-Warning "Python was not found. Cocos2d-x download-deps.py was not run. Install Python 3, then run .\scripts\setup_cocos.ps1 again if the build reports missing external libraries."
