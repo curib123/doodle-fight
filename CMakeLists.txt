@@ -16,6 +16,8 @@ set(GAME_SOURCES
     Classes/AppDelegate.cpp
     Classes/GameScene.cpp
     Classes/Player.cpp
+    Classes/Combat/Projectile.cpp
+    Classes/Combat/Weapon.cpp
     Classes/Network/NetworkManager.cpp
 )
 
@@ -23,6 +25,8 @@ set(GAME_HEADERS
     Classes/AppDelegate.h
     Classes/GameScene.h
     Classes/Player.h
+    Classes/Combat/Projectile.h
+    Classes/Combat/Weapon.h
     Classes/Network/NetworkManager.h
 )
 
