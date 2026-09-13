@@ -1,5 +1,7 @@
 #include "Combat/Weapon.h"
+
 #include <algorithm>
+#include <utility>
 
 Weapon::Weapon(WeaponDefinition definition)
     : definition_(std::move(definition)), ammoInMagazine_(definition_.magazineSize) {}
