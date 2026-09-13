@@ -3,9 +3,6 @@
 #include "Combat/Projectile.h"
 #include "Player.h"
 
-#include <algorithm>
-#include <cmath>
-
 USING_NS_CC;
 
 bool GameScene::init() {
@@ -42,12 +39,11 @@ void GameScene::setupArena() {
     scenery->drawSolidCircle(Vec2(origin.x + 115.0f, origin.y + size.height - 120.0f), 26.0f, 0.0f, 32, cloud);
     scenery->drawSolidCircle(Vec2(origin.x + 145.0f, origin.y + size.height - 110.0f), 34.0f, 0.0f, 32, cloud);
     scenery->drawSolidCircle(Vec2(origin.x + 180.0f, origin.y + size.height - 122.0f), 25.0f, 0.0f, 32, cloud);
-
     scenery->drawSolidCircle(Vec2(origin.x + size.width * 0.56f, origin.y + size.height - 165.0f), 22.0f, 0.0f, 32, cloud);
     scenery->drawSolidCircle(Vec2(origin.x + size.width * 0.60f, origin.y + size.height - 154.0f), 31.0f, 0.0f, 32, cloud);
     scenery->drawSolidCircle(Vec2(origin.x + size.width * 0.64f, origin.y + size.height - 166.0f), 23.0f, 0.0f, 32, cloud);
 
-    // Floating-island arena base.
+    // Bright floating-island arena base.
     scenery->drawSolidRect(
         Vec2(origin.x, origin.y),
         Vec2(origin.x + size.width, groundY_ - 30.0f),
@@ -63,7 +59,6 @@ void GameScene::setupArena() {
         Vec2(origin.x + size.width, groundY_),
         Color4F(0.72f, 0.95f, 0.48f, 1.0f)
     );
-
     addChild(scenery, -10);
 
     auto* title = Label::createWithSystemFont("Doodle Fight - Combat Lab", "Arial", 28);
@@ -186,14 +181,9 @@ void GameScene::setupInput() {
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboard, this);
 
     auto* mouse = EventListenerMouse::create();
-
     mouse->onMouseMove = [this](EventMouse* event) {
-        const auto size = Director::getInstance()->getVisibleSize();
-        const auto origin = Director::getInstance()->getVisibleOrigin();
-
-        // Desktop cursor coordinates are converted into the scene's bottom-left origin.
-        aimWorld_.x = origin.x + event->getCursorX();
-        aimWorld_.y = origin.y + size.height - event->getCursorY();
+        // Cocos performs viewport/view conversion and returns OpenGL scene coordinates.
+        aimWorld_ = event->getLocation();
     };
 
     mouse->onMouseDown = [this](EventMouse* event) {
@@ -219,7 +209,6 @@ void GameScene::fireProjectile() {
 
     const auto direction = player_->aimDirection();
     const auto& definition = weapon_.definition();
-
     auto* projectile = Projectile::create(
         direction,
         definition.projectileSpeed,
@@ -246,7 +235,6 @@ void GameScene::updateProjectiles(float dt) {
 
         bool remove = projectile->expired();
         const auto position = projectile->getPosition();
-
         if (position.x < origin.x - 60.0f ||
             position.x > origin.x + size.width + 60.0f ||
             position.y < origin.y - 60.0f ||
@@ -257,8 +245,7 @@ void GameScene::updateProjectiles(float dt) {
         if (!remove && target_ && target_->isAlive()) {
             const float hitDistance = projectile->hitRadius() + target_->hitRadius();
             if (position.distanceSquared(target_->getPosition()) <= hitDistance * hitDistance) {
-                const bool knockedOut = target_->takeDamage(projectile->damage());
-                if (knockedOut) {
+                if (target_->takeDamage(projectile->damage())) {
                     ++koCount_;
                 }
                 remove = true;
@@ -290,13 +277,11 @@ void GameScene::updateHud() {
     }
 
     if (targetHealthLabel_ && target_) {
-        if (target_->isAlive()) {
-            targetHealthLabel_->setString(
-                StringUtils::format("Buddy HP: %.0f / %.0f", target_->health(), target_->maxHealth())
-            );
-        } else {
-            targetHealthLabel_->setString("Buddy: respawning...");
-        }
+        targetHealthLabel_->setString(
+            target_->isAlive()
+                ? StringUtils::format("Buddy HP: %.0f / %.0f", target_->health(), target_->maxHealth())
+                : "Buddy: respawning..."
+        );
     }
 
     if (koLabel_) {
