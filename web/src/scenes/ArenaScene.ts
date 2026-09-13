@@ -63,7 +63,7 @@ export class ArenaScene extends Phaser.Scene {
   private ended = false;
   private cleanup: Array<() => void> = [];
 
-  private physics = physicsFor(this.config);
+  private arenaPhysics = physicsFor(this.config);
   private rules = modeById(this.config.modeId);
   private keys!: Record<'left'|'right'|'jet'|'reload'|'prev'|'next'|'menu', Phaser.Input.Keyboard.Key>;
   private aim = new Phaser.Math.Vector2(980, 300);
@@ -93,7 +93,7 @@ export class ArenaScene extends Phaser.Scene {
     this.config = data.config ?? { mapId: 'sky-garden', modeId: 'ffa', scoreLimit: 10 };
     this.players = data.lobbyPlayers ?? [{ id: 1, name: 'Sky Explorer', ready: true, connected: true, isHost: true }];
     this.localId = data.localPlayerId ?? 1;
-    this.physics = physicsFor(this.config);
+    this.arenaPhysics = physicsFor(this.config);
     this.rules = modeById(this.config.modeId);
     this.fighters.clear(); this.shots = []; this.latestPeerInput.clear();
     this.interpolators.clear(); this.history.clear(); this.outbound = [];
@@ -155,10 +155,10 @@ export class ArenaScene extends Phaser.Scene {
     const spawns = [105, 425, 855, 1170];
     for (const p of source) {
       const weaponIndex = this.rules.forcedWeapon ?? ((p.id - 1) % WEAPONS.length);
-      const sprite = this.add.sprite(spawns[p.id - 1], this.physics.groundY - 64, 'hero', 0)
+      const sprite = this.add.sprite(spawns[p.id - 1], this.arenaPhysics.groundY - 64, 'hero', 0)
         .setScale(1.25).setTint(TINTS[p.id]).play('hero-idle');
       this.fighters.set(p.id, {
-        id:p.id, name:p.name, sprite, x:spawns[p.id-1], y:this.physics.groundY,
+        id:p.id, name:p.name, sprite, x:spawns[p.id-1], y:this.arenaPhysics.groundY,
         vx:0, vy:0, aimX:p.id===1?1:-1, aimY:0, health:100, fuel:100, alive:true,
         respawnMs:0, weaponIndex, ammo:WEAPONS[weaponIndex].clipSize, score:0,
         fireCd:0, reloadCd:0, appliedReloadSeq:0, spawnX:spawns[p.id-1],
@@ -275,7 +275,7 @@ export class ArenaScene extends Phaser.Scene {
   private applyInput(f: Fighter, input: PlayerInputSample, authoritative: boolean): void {
     f.aimX = input.aimX; f.aimY = input.aimY;
     f.weaponIndex = this.rules.forcedWeapon ?? Phaser.Math.Clamp(input.weaponIndex, 0, WEAPONS.length - 1);
-    simulateMovement(f, input, this.physics);
+    simulateMovement(f, input, this.arenaPhysics);
     if (!authoritative) return;
     if (input.reloadSeq > f.appliedReloadSeq) { f.appliedReloadSeq = input.reloadSeq; this.beginReload(f); }
     if (input.firing) this.fire(f);
@@ -324,7 +324,7 @@ export class ArenaScene extends Phaser.Scene {
     const localState = snapshot.players.find((p) => p.id === this.localId);
     if (localState) {
       const local = this.local(); this.applyNet(local, localState);
-      this.history.acknowledge(ack); this.history.replay(local, this.physics);
+      this.history.acknowledge(ack); this.history.replay(local, this.arenaPhysics);
     }
     for (const state of snapshot.players) {
       if (state.id === this.localId) continue;
@@ -396,7 +396,7 @@ export class ArenaScene extends Phaser.Scene {
   private updateRespawns(dt: number): void {
     for (const f of this.fighters.values()) {
       if (f.alive) continue; f.respawnMs -= dt * 1000; if (f.respawnMs > 0) continue;
-      f.alive = true; f.health = 100; f.fuel = 100; f.vx = 0; f.vy = 0; f.x = f.spawnX; f.y = this.physics.groundY; f.ammo = WEAPONS[f.weaponIndex].clipSize; f.sprite.setVisible(true);
+      f.alive = true; f.health = 100; f.fuel = 100; f.vx = 0; f.vy = 0; f.x = f.spawnX; f.y = this.arenaPhysics.groundY; f.ammo = WEAPONS[f.weaponIndex].clipSize; f.sprite.setVisible(true);
     }
   }
 
@@ -410,7 +410,7 @@ export class ArenaScene extends Phaser.Scene {
     for (const f of this.fighters.values()) {
       f.sprite.setPosition(f.x, f.y - 64).setFlipX(f.aimX < 0).setVisible(f.alive);
       if (!f.alive) continue;
-      const animation = Math.abs(f.vy) > 20 || f.y < this.physics.groundY - 5 ? 'hero-fly' : Math.abs(f.vx) > 35 ? 'hero-run' : 'hero-idle';
+      const animation = Math.abs(f.vy) > 20 || f.y < this.arenaPhysics.groundY - 5 ? 'hero-fly' : Math.abs(f.vx) > 35 ? 'hero-run' : 'hero-idle';
       if (f.sprite.anims.currentAnim?.key !== animation) f.sprite.play(animation, true);
     }
   }
