@@ -1,0 +1,26 @@
+# Build outputs
+build/
+cmake-build-*/
+proj.win32/Debug.win32/
+proj.win32/Release.win32/
+
+# IDE
+.vscode/
+.idea/
+.vs/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Android
+.gradle/
+local.properties
+*.apk
+*.aab
+
+# Generated
+CMakeCache.txt
+CMakeFiles/
