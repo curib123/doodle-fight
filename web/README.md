@@ -1,69 +1,39 @@
 # Doodle Fight PWA
 
-Browser/PWA version of Doodle Fight built with **Phaser 3 + TypeScript + WebRTC + Vite PWA**.
+Doodle Fight's browser edition is built with **Phaser 3 + TypeScript + WebRTC + Vite PWA** and uses the project's original AI-generated hero, VFX, and fantasy-tech weapon sprite sheets.
 
-## What is implemented
+## Current feature set
 
-- installable landscape PWA with offline caching
-- original AI-generated hero sprite sheet used as real Phaser animations
-- idle, run, jetpack, shooting and KO animation states
-- original AI-generated VFX sheet for muzzle flashes, impacts, jet exhaust and respawn effects
-- original fantasy-tech weapon art sheet
-- five playable weapon profiles
-- desktop keyboard/mouse controls
-- multitouch mobile controls
-- practice arena with combat drones
-- direct WebRTC DataChannel 1v1
-- host-authoritative damage, health, KOs, respawns and projectiles
-- peer-side movement prediction with snapshot reconciliation
-- no gameplay server required
-- manual WebRTC offer/answer signaling for the current prototype
+- installable landscape PWA for Android and Windows
+- AI-generated idle/run/jetpack/shoot/KO sprite animations and VFX
+- five original fantasy-tech weapons
+- three colorful arena themes with one-way floating platforms
+- 2–4 player host-authoritative Free For All over direct WebRTC DataChannels
+- lobby with ready states, room code, map/mode/score selection
+- client-side prediction with input-history replay
+- delayed interpolation for remote players
+- practice mode with three bots
+- desktop keyboard/mouse and Android-friendly multitouch controls
+- public STUN NAT discovery and optional WebSocket signaling
 
-## Desktop controls
-
-- `A` / `D` — move
-- `Space` — jetpack
-- mouse — aim
-- hold left mouse — fire
-- `Q` / `E` — switch weapon
-- `R` — reload
-- `M` — return to menu
-
-## Touch controls
-
-- drag the left thumb area — move
-- hold `JET` — jetpack
-- hold/drag on the right side — aim and fire
-
-## Run
+## Run locally
 
 ```bash
 cd web
 npm install
+npm run signal
+```
+
+In a second terminal:
+
+```bash
 npm run dev
 ```
 
-Open the shown local URL. For testing on a phone, run on your LAN and open the development server from the phone using the computer's LAN IP.
+For production, serve `dist/` over HTTPS and use `VITE_SIGNALING_URL=wss://signal.example.com`.
 
-## WebRTC 1v1
+## Controls
 
-### Host
-1. Select **HOST WEBRTC**.
-2. Copy the generated HOST OFFER code and send it to the other player.
-3. Paste the JOIN ANSWER returned by the other player.
+Desktop: `A/D`, `Space`, mouse aim/fire, `Q/E`, `R`, `M`.
 
-### Join
-1. Select **JOIN WEBRTC**.
-2. Paste the host's offer.
-3. Copy the generated JOIN ANSWER back to the host.
-
-Once both descriptions are exchanged, the browser establishes a direct WebRTC DataChannel. Public STUN is used for NAT discovery; there is no dedicated gameplay server or TURN fallback in this prototype.
-
-## Build/install
-
-```bash
-npm run build
-npm run preview
-```
-
-Serve the production build over HTTPS (or localhost) for full PWA installation and service-worker behavior.
+Touch: left virtual stick to move, right virtual stick to aim/fire, plus `JET`, `SWAP`, and `RLD`.

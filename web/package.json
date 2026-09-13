@@ -1,15 +1,17 @@
 {
   "name": "doodle-fight-pwa",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "signal": "node signaling/server.mjs"
   },
   "dependencies": {
-    "phaser": "^3.90.0"
+    "phaser": "^3.90.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
