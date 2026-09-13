@@ -16,6 +16,13 @@ public:
 
     bool takeDamage(float amount);
 
+    void applyNetworkState(const cocos2d::Vec2& position,
+                           const cocos2d::Vec2& velocity,
+                           const cocos2d::Vec2& aimDirection,
+                           float health,
+                           bool alive,
+                           float motionBlend = 1.0f);
+
     const cocos2d::Vec2& aimDirection() const { return aimDirection_; }
     const cocos2d::Vec2& velocity() const { return velocity_; }
     float health() const { return health_; }
